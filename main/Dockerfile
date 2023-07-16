@@ -1,4 +1,4 @@
-FROM node:16-bookworm
+FROM node:18-bookworm
 #创建install.sh 并向其中写入命令
 RUN touch install.sh
 #更换中科大镜像源
