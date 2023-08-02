@@ -182,7 +182,7 @@ function Debian_family_install_script() {
     #安装必要运行库
     apt install apt-transport-https ca-certificates -y
     apt install libgbm-dev -y
-    apt install libxkbcommon-x11-0 -y
+    apt install libxbcommon-x11-0 -y
     apt install libgtk-3-0 -y
     apt install ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils -y
     apt install libnss3-dev -y
@@ -229,7 +229,9 @@ function Debian_family_install_script() {
 }
 #RHEL系安装脚本
 function RHEL_family_install_script() {
+    yum install curl -y
     curl -sL https://rpm.nodesource.com/setup_18.x | bash -
+    sudo sed -i 's|rpm.nodesource.com|mirrors.huaweicloud.com/nodesource/rpm|g' /etc/yum.repos.d/nodesource-*.repo
 
     yum -y update
     yum install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 -y
@@ -238,7 +240,6 @@ function RHEL_family_install_script() {
     yum install wget -y
     yum install gcc gcc-c++ -y
     yum install make -y
-    yum install curl -y
     yum install nodejs npm -y
 
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
@@ -252,15 +253,15 @@ function RHEL_family_install_script() {
     git clone https://gitee.com/mirrors/ffmpeg.git ffmpeg
     cd x264
     ./configure --disable-asm
-    make && make install
+    make  -j12 && make install
     cd ..
     tar -xzvf redis-7.0.9.tar.gz
     cd redis-7.0.9
-    make && make install
+    make -j12 && make install
     cd ..
     cd ffmpeg
     ./configure
-    make && make install
+    make -j12 && make install
     cd ..
     git clone --depth=1 https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
     cd Miao-Yunzai
@@ -271,11 +272,59 @@ function RHEL_family_install_script() {
     node node_modules/puppeteer/install.js
     redis-server --save 900 1 --save 300 10 --daemonize yes --ignore-warnings ARM64-COW-BUG
 }
+
+function opensuse_install_script() {
+    zypper install curl 
+    curl -sL https://rpm.nodesource.com/setup_18.x | bash -
+    sudo sed -i 's|rpm.nodesource.com|mirrors.huaweicloud.com/nodesource/rpm|g' /etc/yum.repos.d/nodesource-*.repo
+
+    zypper -y update
+    zypper install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64
+    zypper install yum-utils 
+    zypper install git 
+    zypper install wget 
+    zypper install gcc gcc-c++ 
+    zypper install make 
+    zypper install nodejs npm
+    zypper install yasm
+
+    wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
+    tar xf yasm-1.3.0.tar.gz
+    cd yasm-1.3.0/
+    ./configure --prefix=/usr/local --disable-x86asm
+    make -j12 && make install
+    cd ..
+    git clone https://code.videolan.org/videolan/x264.git x264
+    wget https://mirrors.huaweicloud.com/redis/redis-7.0.9.tar.gz
+    git clone https://gitee.com/mirrors/ffmpeg.git ffmpeg
+    cd x264
+    ./configure --disable-asm
+    make -j12 && make install
+    cd ..
+    tar -xzvf redis-7.0.9.tar.gz
+    cd redis-7.0.9
+    make -j12 --disable-asm && make install
+    cd ..
+    cd ffmpeg
+    ./configure
+    make -j12 && make install
+    cd ..
+    git clone --depth=1 https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
+    cd Miao-Yunzai
+    git clone --depth=1 https://gitee.com/yoimiya-kokomi/miao-plugin.git ./plugins/miao-plugin/
+    npm --registry=https://registry.npmmirror.com install pnpm -g
+    pnpm config set registry https://registry.npmmirror.com
+    pnpm install -P
+    node node_modules/puppeteer/install.js
+    redis-server --save 900 1 --save 300 10 --daemonize yes --ignore-warnings ARM64-COW-BUG
+}
+
 #RHEL家族
-function RHEL_famliy() {
+function RHEL_family() {
     case "${SYSTEM_FACTIONS}" in 
     "${SYSTEM_OPENSUSE}")
-        RHEL_family_install_script
+	zypper install yum
+        Output_Error "对不起，暂不支持OPENSUSE"
         ;;
     "${SYSTEM_OPENCLOUDOS}")
         RHEL_family_install_script
