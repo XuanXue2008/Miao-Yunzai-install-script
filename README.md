@@ -11,9 +11,9 @@
 > # 支持的Linux发行版
 |  Debian系   | RHEL系  |
 |  ----  | ----  |
-| Ubuntu  | Centos |
-| Debian  | Fedora |
-| Deepin  | ROCKY |
+| * Ubuntu  | * Centos |
+| * Debian  | * Fedora |
+| * Deepin  | * ROCKY |
 | 理论上Debian系发行版系统的都支持  | PS: 暂不支持OPENSUSE |
 ## 其它RHEL系的发行版暂未测试
 ### 如果你喜欢这个项目请给我一个sta
