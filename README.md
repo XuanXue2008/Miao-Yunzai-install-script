@@ -6,7 +6,7 @@
 > # 使用方法
 >> ## 以root用户执行
 > ```javascript
->> `` curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh) ``
+>>  curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh)
 > ```
 > # 支持的Linux发行版
 > 表头  | 表头  | 表头
