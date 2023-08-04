@@ -18,7 +18,7 @@
 >>> ## PS: 暂不支持OPENSUSE
 >>>## 其它RHEL系的发行版暂未测试
 ### 本项目参考了SuperManito 大大的 LinuxMirrors项目
-### 这里是大大项目的地址 <https://github.com/SuperManito/LinuxMirrors>
+## 这里是大大项目的地址
 [LinuxMirrors](https://github.com/SuperManito/LinuxMirrors)   
 ### 如果你喜欢这个项目请给我一个star
 ## 如果您在使用中遇到问题可以提交issues
