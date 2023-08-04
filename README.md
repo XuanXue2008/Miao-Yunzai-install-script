@@ -9,6 +9,10 @@
 >> `` curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh) ``
 > ```
 > # 支持的Linux发行版
+> 表头  | 表头  | 表头
+ ---- | ----- | ------  
+ 单元格内容  | 单元格内容 | 单元格内容 
+ 单元格内容  | 单元格内容 | 单元格内容
 >> ## Debian系
 >>> #### Ubuntu
 >>> #### Debian
