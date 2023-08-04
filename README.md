@@ -7,7 +7,7 @@
 >>> #### Ubuntu
 >>> #### Debian
 >>> #### Deepin
->>> ### 理论上Debian系的都支持
+>>> ### 理论上Debian系发行版系统的都支持
 >> ## RHEL系
 >>> #### Centos
 >>> #### Fedora
