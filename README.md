@@ -1,10 +1,10 @@
 > # Miao-Yunzai-install-script
 >> #### Miao-Yunzai-install-script ***帮助懒人*** 在 *Linux*发行版部署Miao-Yunzaibot机器人的脚本
 >> ### 本项目参考了SuperManito 大大的 LinuxMirrors项目
->> ## 这里是大大项目的地址
+>> ## 原项目地址
 >>[LinuxMirrors](https://github.com/SuperManito/LinuxMirrors)   
-> #使用方法
-> ## 以root用户执行
+> ##使用方法
+>> ## 以root用户执行
 > ```javascript
 >> `` curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh) ``
 > ```
