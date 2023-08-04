@@ -21,5 +21,6 @@
 ## 这里是大大项目的地址
 [LinuxMirrors](https://github.com/SuperManito/LinuxMirrors)   
 ### 如果你喜欢这个项目请给我一个star
-## 如果您在使用中遇到问题可以提交issues
-## 如果您有好的代码可以合并到其中可以提交PR
+##有问题反馈
+ 如果您在使用中遇到问题可以提交issues
+ 如果您有好的代码可以合并到其中可以提交PR
