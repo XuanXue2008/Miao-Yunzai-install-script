@@ -1,7 +1,7 @@
 > # Miao-Yunzai-install-script
 >> #### Miao-Yunzai-install-script ***帮助懒人*** 在 *Linux*发行版部署Miao-Yunzaibot机器人的脚本
 > #使用方法
->> ## 以root用户执行`` curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/main/test-d.sh) ``
+>> ## 以root用户执行`` curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh) ``
 > # 支持的Linux发行版
 >> ## Debian系
 >>> #### Ubuntu
