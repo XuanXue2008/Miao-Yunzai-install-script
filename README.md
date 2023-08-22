@@ -4,9 +4,10 @@
 >> ## 原项目地址
 >>* [LinuxMirrors](https://github.com/SuperManito/LinuxMirrors)   
 > # 使用方法
+> # 下载sh后
 >> ## 以root用户执行
 > ```javascript
->>  curl (https://github.com/XuanXue2008/Miao-Yunzai-install-script/releases/download/pre1.0/test-d.sh)
+>>  sudo bash ./isntall.sh
 > ```
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 > # 支持的Linux发行版
