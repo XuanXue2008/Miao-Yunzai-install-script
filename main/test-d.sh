@@ -213,7 +213,7 @@ function runningtime_env(){
     fi
 }
 function debian_nodejs_uninstall(){
-
+    apt remove nodejs
 }
 function runningtime_check(){
     if ((node_var >= 18)); then
@@ -221,6 +221,7 @@ function runningtime_check(){
         break
     else
         echo "nodejs需要重装"
+        debian_nodejs_uninstall
         node_flag=true
     fi
     if ((redis_var >= 7)); then
