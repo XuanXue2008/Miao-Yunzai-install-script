@@ -42,6 +42,13 @@ COMPLETE='[\033[32mDONE\033[0m]'
 WARN='[\033[33mWARN\033[0m]'
 ERROR='[\033[31mERROR\033[0m]'
 WORKING='[\033[34m*\033[0m]'
+
+node_flag=false
+redis_flag=false
+ffmpeg_flag=false
+redis_bool=true
+node_bool=true
+ffmpeg_bool=true
 ## 报错退出
 function Output_Error() {
     [ "$1" ] && echo -e "\n$ERROR $1\n"
@@ -53,8 +60,18 @@ function PermissionJudgment() {
         Output_Error "权限不足，请使用 Root 用户运行本脚本"
     fi
 }
+function StartTitle() {
+    [ -z "${SOURCE}" ] && clear
+    echo -e ' 欢迎使用一键安装MiaoYunzai_bot脚本'
+}
 ##判断系统版本
 function EnvJudgment() {
+    node -v || node_flag=0
+    redis-cli -v || redis_flag=0
+    ffmpeg -version || ffmpeg_flag=0
+    node_version="$(node -v)"
+    redis_version="$(redis-cli -v) "
+    ffmpeg_version="$(ffmpeg -version)"
     ## 定义系统名称
     SYSTEM_NAME="$(cat $File_LinuxRelease | grep -E "^NAME=" | awk -F '=' '{print$2}' | sed "s/[\'\"]//g")"
     cat $File_LinuxRelease | grep "PRETTY_NAME=" -q
@@ -171,15 +188,64 @@ function EnvJudgment() {
     esac
     echo ${SYSTEM_FACTIONS}
 }
+function check_dir(){
+    if [ ! -d "runningtime" ];then
+    mkdir runningtime && cd runningtime
+    echo "文件夹已创建"
+    else
+    rm -rf runningtime
+    check_dir
+fi
+}
+function runningtime_env(){
+    if $node_bool; then
+        node_var=$(node -v)
+        node_var=${node_var:1:2}
+        node_var=$((node_var))
+        node_bool=false
+    fi
+    if $redis_bool; then
+        redis_var=$(redis-cli -v)
+        redis_var=${redis_var:10:15}
+        redis_var=${redis_var:0:1}
+        redis_var=$((redis_var))
+        redis_bool=false
+    fi
+}
+function debian_nodejs_uninstall(){
+
+}
+function runningtime_check(){
+    if ((node_var >= 18)); then
+        echo "nodejs版本无误"
+        break
+    else
+        echo "nodejs需要重装"
+        node_flag=true
+    fi
+    if ((redis_var >= 7)); then
+        echo "redis版本无误"
+        break
+    else
+        echo "redis需要重装"
+        redis_flag=true
+    fi
+}
+function runningtime(){
+    runningtime_env
+    runningtime_check
+}
+
+
+
 #Debian系安装脚本
-function Debian_family_install_script() {
+function Debian_family_install_runningtime_script(){
     #更新源
     apt-get update
-    curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-    curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
-    echo "deb https://repo.huaweicloud.com/nodesource/node_18.x stretch main" >> /etc/apt/sources.list
-    echo "deb-src https://repo.huaweicloud.com/nodesource/node_18.x stretch main" >> /etc/apt/sources.list
     #安装必要运行库
+    apt install pkg-config -y
+    apt install libx264-dev -y
+    apt install gcc g++ make -y
     apt install apt-transport-https ca-certificates -y
     apt install libgbm-dev -y
     apt install libxbcommon-x11-0 -y
@@ -188,29 +254,45 @@ function Debian_family_install_script() {
     apt install libnss3-dev -y
     apt install libxss1 -y
     apt install libasound2 -y
+    apt install ffmpeg -y
     apt install git -y
-    apt install nodejs npm -y
+}
+function Debian_family_install_nodejs_script(){
+    curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+    curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
+    echo "deb https://mirrors.ustc.edu.cn/nodesource/deb/node_18.x stretch main" >> /etc/apt/sources.list
+    echo "deb-src https://mirrors.ustc.edu.cn/nodesource/deb/node_18.x stretch main" >> /etc/apt/sources.list
+    apt-get update
+    apt install nodejs
+}
+function Debian_family_install_x264_script(){
     #克隆 libx264
     git clone https://code.videolan.org/videolan/x264.git x264
-    #下载 redis
-    wget https://mirrors.huaweicloud.com/redis/redis-7.0.9.tar.gz
-    #克隆 ffmpeg
-    git clone https://gitee.com/mirrors/ffmpeg.git ffmpeg
     #编译安装 libx264
     cd x264
     ./configure
-    make && make install
+    make -j12 && make install
     cd ..
+}
+function Debian_family_install_redis_script(){
+    #下载 redis
+    wget https://mirrors.huaweicloud.com/redis/redis-7.0.9.tar.gz
     #编译安装 redis
     tar -xzvf redis-7.0.9.tar.gz
     cd redis-7.0.9
-    make && make install
+    make -j12 && make install
     cd ..
+}
+function Debian_family_install_ffmpeg_script() {
+    #克隆 ffmpeg
+    git clone https://gitee.com/mirrors/ffmpeg.git ffmpeg
     #编译安装 ffmpeg
     cd ffmpeg
     ./configure --enable-shared --enable-swscale --enable-gpl --enable-nonfree --enable-pic --prefix=/home/ffmpeg --enable-version3 --enable-postproc --enable-pthreads --enable-static --enable-libx264 --disable-x86asm
-    make && make install
+    make -j12 && make install
     cd ..
+}
+function Debian_install_script() {
     #克隆 Miao-Yunzai
     git clone --depth=1 https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
     cd Miao-Yunzai
@@ -227,12 +309,31 @@ function Debian_family_install_script() {
     #启动 redis
     redis-server --save 900 1 --save 300 10 --daemonize yes --ignore-warnings ARM64-COW-BUG
 }
+function Debian_family_install_script(){
+    apt install linuxlogo
+    linuxlogo
+    runningtime
+    Debian_family_install_runningtime_script
+    if $redis_flag; then
+        Debian_family_install_redis_script
+    fi
+    #Debian_family_install_ffmpeg_script
+    #Debian_family_install_x264_script
+    if $node_flag; then
+        Debian_family_install_nodejs_script
+    fi
+    cd ..
+    Debian_install_script
+}
+
 #RHEL系安装脚本
-function RHEL_family_install_script() {
+function RHEL_family_install_nodejs_script() {
     yum install curl -y
     curl -sL https://rpm.nodesource.com/setup_18.x | bash -
-    sudo sed -i 's|rpm.nodesource.com|mirrors.huaweicloud.com/nodesource/rpm|g' /etc/yum.repos.d/nodesource-*.repo
-
+    sudo sed -i 's|rpm.nodesource.com|mirrors.ustc.edu.cn/nodesource/rpm|g' /etc/yum.repos.d/nodesource-*.repo
+    yum install nodejs npm -y
+}
+function RHEL_family_install_runningtime_script(){
     yum -y update
     yum install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 -y
     yum install yum-utils -y
@@ -240,14 +341,16 @@ function RHEL_family_install_script() {
     yum install wget -y
     yum install gcc gcc-c++ -y
     yum install make -y
-    yum install nodejs npm -y
-
+}
+function RHEL_family_install_yasm_script(){
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar xf yasm-1.3.0.tar.gz
     cd yasm-1.3.0/
     ./configure --prefix=/usr/local
     make -j12 && make install
     cd ..
+}
+function RHEL_family_install_x264_script(){
     git clone https://code.videolan.org/videolan/x264.git x264
     wget https://mirrors.huaweicloud.com/redis/redis-7.0.9.tar.gz
     git clone https://gitee.com/mirrors/ffmpeg.git ffmpeg
@@ -255,14 +358,20 @@ function RHEL_family_install_script() {
     ./configure --disable-asm
     make  -j12 && make install
     cd ..
+}
+function RHEL_family_install_redis_script(){
     tar -xzvf redis-7.0.9.tar.gz
     cd redis-7.0.9
     make -j12 && make install
     cd ..
+}
+function RHEL_family_install_ffmpeg_script(){
     cd ffmpeg
     ./configure
     make -j12 && make install
     cd ..
+}
+function RHEL_install_script(){
     git clone --depth=1 https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
     cd Miao-Yunzai
     git clone --depth=1 https://gitee.com/yoimiya-kokomi/miao-plugin.git ./plugins/miao-plugin/
@@ -272,6 +381,23 @@ function RHEL_family_install_script() {
     node node_modules/puppeteer/install.js
     redis-server --save 900 1 --save 300 10 --daemonize yes --ignore-warnings ARM64-COW-BUG
 }
+function RHEL_family_install_script(){
+    check_dir
+    runningtime
+    if $node_flag; then
+        RHEL_family_install_nodejs_script
+    fi
+    RHEL_family_install_runningtime_script
+    RHEL_family_install_yasm_script
+    RHEL_family_install_x264_script
+    RHEL_family_install_ffmpeg_script
+    if $redis_flag; then
+        RHEL_family_install_redis_script
+    fi
+    cd ..
+    RHEL_install_script
+}
+
 
 function opensuse_install_script() {
     zypper install curl 
@@ -377,6 +503,8 @@ function output(){
 function Combin_Function() {
     PermissionJudgment
     EnvJudgment
+    StartTitle
+    check_dir
     output
 }
 #运行主程序
