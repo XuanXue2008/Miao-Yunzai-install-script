@@ -5,9 +5,10 @@
 >>* [LinuxMirrors](https://github.com/SuperManito/LinuxMirrors)   
 > # 使用方法
 > # 下载sh后
->> ## 以root用户执行
+>> ## 以普通用户执行
+>> ##内部含有较多sudo比较烦（）
 > ```javascript
->>  sudo bash ./isntall.sh
+>>  bash ./isntall.sh
 > ```
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 > # 支持的Linux发行版
